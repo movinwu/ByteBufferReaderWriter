@@ -7,6 +7,7 @@
 #if UNITY_PS3 || UNITY_WII || UNITY_WIIU
     #define BIG_ENDIAN // 大端序平台
 #endif
+#define BIG_ENDIAN
 
 using System;
 
@@ -46,6 +47,14 @@ namespace ByteBuffer
             _buffer = buffer;
             _readPointer = 0;
             _length = buffer.Length;
+        }
+
+        /// <summary>
+        /// 重置读取
+        /// </summary>
+        public void Reset()
+        {
+            _readPointer = 0;
         }
 
         /// <summary>

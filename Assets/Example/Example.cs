@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.Text;
 using UnityEngine;
 using ByteBuffer;
+using Debug = UnityEngine.Debug;
 
 public class Example : MonoBehaviour
 {
@@ -9,19 +11,31 @@ public class Example : MonoBehaviour
     {
         // 测试ByteBuffer读取和写入
         var writer = new ByteBufferWriter(1024 << 10);
-        writer.WriteStringArrayArray(new string[][]
-            { new string[] { "1", "2" }, new string[] { "3", "你好，世界！" }, new string[] { "你好！世界2！！！" } });
-        writer.WriteDoubleArrayArray(new double[][] { new double[] { 1.7, 1.6, 2.560 }, new double[] { -0.358, 3.14159265 } });
-        writer.WriteSingleArrayArray(new float[][] { new float[] { 1.7f, 2.560f }, new float[] { -0.358f, 3.14159265f } });
-        writer.WriteUInt64ArrayArray(new ulong[][] { new ulong[] { 1, 2 }, new ulong[] { 3, 4 } });
-        writer.WriteInt64ArrayArray(new long[][] { new long[] { 1, 2 }, new long[] { 3, -4 } });
-        writer.WriteUInt32ArrayArray(new uint[][] { new uint[] { 1, 2 }, new uint[] { 3, 4 } });
-        writer.WriteInt32ArrayArray(new int[][] { new int[] { 1, 2 }, new int[] { 3, -4 } });
-        writer.WriteUInt16ArrayArray(new ushort[][] { new ushort[] { 1, 2 }, new ushort[] { 3, 4 } });
-        writer.WriteInt16ArrayArray(new short[][] { new short[] { 1, 2 }, new short[] { 3, -4 } });
-        writer.WriteByteArrayArray(new byte[][] { new byte[] { 1, 2 }, new byte[] { 3, 4 } });
-        writer.WriteSByteArrayArray(new sbyte[][] { new sbyte[] { 1, 2 }, new sbyte[] { 3, -4 } });
-        writer.WriteBoolArrayArray(new bool[][] { new bool[] { true, false }, new bool[] { true, false } });
+        
+        // 写入性能测试
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+        for (int i = 0; i < 10000; i++)
+        {
+            writer.ResetWriter();
+            
+            writer.WriteStringArrayArray(new string[][]
+                { new string[] { "1", "2" }, new string[] { "3", "你好，世界！" }, new string[] { "你好！世界2！！！" } });
+            writer.WriteDoubleArrayArray(new double[][] { new double[] { 1.7, 1.6, 2.560 }, new double[] { -0.358, 3.14159265 } });
+            writer.WriteSingleArrayArray(new float[][] { new float[] { 1.7f, 2.560f }, new float[] { -0.358f, 3.14159265f } });
+            writer.WriteUInt64ArrayArray(new ulong[][] { new ulong[] { 1, 2 }, new ulong[] { 3, 4 } });
+            writer.WriteInt64ArrayArray(new long[][] { new long[] { 1, 2 }, new long[] { 3, -4 } });
+            writer.WriteUInt32ArrayArray(new uint[][] { new uint[] { 1, 2 }, new uint[] { 3, 4 } });
+            writer.WriteInt32ArrayArray(new int[][] { new int[] { 1, 2 }, new int[] { 3, -4 } });
+            writer.WriteUInt16ArrayArray(new ushort[][] { new ushort[] { 1, 2 }, new ushort[] { 3, 4 } });
+            writer.WriteInt16ArrayArray(new short[][] { new short[] { 1, 2 }, new short[] { 3, -4 } });
+            writer.WriteByteArrayArray(new byte[][] { new byte[] { 1, 2 }, new byte[] { 3, 4 } });
+            writer.WriteSByteArrayArray(new sbyte[][] { new sbyte[] { 1, 2 }, new sbyte[] { 3, -4 } });
+            writer.WriteBoolArrayArray(new bool[][] { new bool[] { true, false }, new bool[] { true, false } });
+        }
+        sw.Stop();
+        Debug.LogError($"写入用时：{sw.ElapsedMilliseconds}-ms");
+        
         
         var bytes = writer.ToArray();
         
@@ -29,6 +43,39 @@ public class Example : MonoBehaviour
         StringBuilder sb = new StringBuilder();
         var reader = new ByteBufferReader(bytes);
         string[][] stringArrayArray = reader.ReadStringArrayArray();
+        double[][] doubleArrayArray = reader.ReadDoubleArrayArray();
+        float[][] floatArrayArray = reader.ReadSingleArrayArray();
+        ulong[][] ulongArrayArray = reader.ReadUInt64ArrayArray();
+        long[][] longArrayArray = reader.ReadInt64ArrayArray();
+        uint[][] uintArrayArray = reader.ReadUInt32ArrayArray();
+        int[][] intArrayArray = reader.ReadInt32ArrayArray();
+        ushort[][] ushortArrayArray = reader.ReadUInt16ArrayArray();
+        short[][] shortArrayArray = reader.ReadInt16ArrayArray();
+        byte[][] byteArrayArray = reader.ReadByteArrayArray();
+        sbyte[][] sbyteArrayArray = reader.ReadSByteArrayArray();
+        bool[][] boolArrayArray = reader.ReadBoolArrayArray();
+        
+        // 读取性能测试
+        sw.Restart();
+        for (int i = 0; i < 10000; i++)
+        {
+            reader.Reset();
+            stringArrayArray = reader.ReadStringArrayArray();
+            doubleArrayArray = reader.ReadDoubleArrayArray();
+            floatArrayArray = reader.ReadSingleArrayArray();
+            ulongArrayArray = reader.ReadUInt64ArrayArray();
+            longArrayArray = reader.ReadInt64ArrayArray();
+            uintArrayArray = reader.ReadUInt32ArrayArray();
+            intArrayArray = reader.ReadInt32ArrayArray();
+            ushortArrayArray = reader.ReadUInt16ArrayArray();
+            shortArrayArray = reader.ReadInt16ArrayArray();
+            byteArrayArray = reader.ReadByteArrayArray();
+            sbyteArrayArray = reader.ReadSByteArrayArray();
+            boolArrayArray = reader.ReadBoolArrayArray();
+        }
+        sw.Stop();
+        Debug.LogError($"读取耗时：{sw.ElapsedMilliseconds}-ms");
+        
         for (int i = 0; i < stringArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -41,7 +88,6 @@ public class Example : MonoBehaviour
         }
 
         sb.AppendLine();
-        double[][] doubleArrayArray = reader.ReadDoubleArrayArray();
         for (int i = 0; i < doubleArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -54,7 +100,6 @@ public class Example : MonoBehaviour
         }
 
         sb.AppendLine();
-        float[][] floatArrayArray = reader.ReadSingleArrayArray();
         for (int i = 0; i < floatArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -67,7 +112,6 @@ public class Example : MonoBehaviour
         }
 
         sb.AppendLine();
-        ulong[][] ulongArrayArray = reader.ReadUInt64ArrayArray();
         for (int i = 0; i < ulongArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -80,7 +124,6 @@ public class Example : MonoBehaviour
         }
 
         sb.AppendLine();
-        long[][] longArrayArray = reader.ReadInt64ArrayArray();
         for (int i = 0; i < longArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -93,7 +136,6 @@ public class Example : MonoBehaviour
         }
         
         sb.AppendLine();
-        uint[][] uintArrayArray = reader.ReadUInt32ArrayArray();
         for (int i = 0; i < uintArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -106,7 +148,6 @@ public class Example : MonoBehaviour
         }
         
         sb.AppendLine();
-        int[][] intArrayArray = reader.ReadInt32ArrayArray();
         for (int i = 0; i < intArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -119,7 +160,6 @@ public class Example : MonoBehaviour
         }
         
         sb.AppendLine();
-        ushort[][] ushortArrayArray = reader.ReadUInt16ArrayArray();
         for (int i = 0; i < ushortArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -132,7 +172,6 @@ public class Example : MonoBehaviour
         }
 
         sb.AppendLine();
-        short[][] shortArrayArray = reader.ReadInt16ArrayArray();
         for (int i = 0; i < shortArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -145,7 +184,6 @@ public class Example : MonoBehaviour
         }
 
         sb.AppendLine();
-        byte[][] byteArrayArray = reader.ReadByteArrayArray();
         for (int i = 0; i < byteArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -158,7 +196,6 @@ public class Example : MonoBehaviour
         }
         
         sb.AppendLine();
-        sbyte[][] sbyteArrayArray = reader.ReadSByteArrayArray();
         for (int i = 0; i < sbyteArrayArray.Length; i++)
         {
             sb.Append("[");
@@ -171,7 +208,6 @@ public class Example : MonoBehaviour
         }
 
         sb.AppendLine();
-        bool[][] boolArrayArray = reader.ReadBoolArrayArray();
         for (int i = 0; i < boolArrayArray.Length; i++)
         {
             sb.Append("[");

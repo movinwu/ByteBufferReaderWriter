@@ -7,6 +7,7 @@
 #if UNITY_PS3 || UNITY_WII || UNITY_WIIU
     #define BIG_ENDIAN // 大端序平台
 #endif
+#define BIG_ENDIAN
 
 using System;
 using UnityEngine;
