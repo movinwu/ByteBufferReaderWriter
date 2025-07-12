@@ -1,0 +1,13 @@
+/Library
+/Logs
+/obj
+/Temp
+/UserSettings
+/.git
+/.idea
+/Packages
+/ProjectSettings
+
+*.csproj
+*.sln
+*.user
