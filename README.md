@@ -1,5 +1,7 @@
 # ByteBufferReaderWriter - Unity字节缓冲区读写库
 
+![README_EN](https://github.com/movinwu/ByteBufferReaderWriter/edit/master/README_EN.md)
+
 ![Unity](https://img.shields.io/badge/Unity-2021.3+-black?logo=unity) ![License](https://img.shields.io/badge/License-MIT-green)
 
 ByteBufferReaderWriter是一个高效的字节缓冲区读写库，专为Unity游戏引擎设计，支持基本数据类型、字符串以及多维数组的序列化与反序列化，自动处理大端序/小端序跨平台兼容性问题。
@@ -172,7 +174,6 @@ string[][] restoredStrArrayArray = reader.ReadStringArrayArray();
 - **维护说明**: 
   欢迎提交Issue报告问题或提出改进建议  
   接受Pull Request贡献代码  
-  联系方式: movin@example.com
 
 ## 使用许可
 
