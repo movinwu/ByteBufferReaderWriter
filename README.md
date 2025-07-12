@@ -1,6 +1,6 @@
 # ByteBufferReaderWriter - Unity字节缓冲区读写库
 
-![https://github.com/movinwu/ByteBufferReaderWriter/edit/master/README_EN.md](https://github.com/movinwu/ByteBufferReaderWriter/blob/master/README_EN)
+![English Version](https://github.com/movinwu/ByteBufferReaderWriter/blob/master/README_EN)
 
 ![Unity](https://img.shields.io/badge/Unity-2021.3+-black?logo=unity) ![License](https://img.shields.io/badge/License-MIT-green)
 
